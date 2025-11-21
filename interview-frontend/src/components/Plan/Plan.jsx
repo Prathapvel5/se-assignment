@@ -82,7 +82,7 @@ const Plan = () => {
                       {planProcedures.map((p) => (
                         <PlanProcedureItem
                           key={p.procedure.procedureId}
-                          procedure={p.procedure}
+                          planProcedure={p}
                           users={users}
                         />
                       ))}

@@ -1,4 +1,4 @@
-const api_url = "http://localhost:10010";
+const api_url = "https://localhost:10010";
 
 export const startPlan = async () => {
     const url = `${api_url}/Plan`;
@@ -45,7 +45,7 @@ export const getProcedures = async () => {
 };
 
 export const getPlanProcedures = async (planId) => {
-    const url = `${api_url}/PlanProcedure?$filter=planId eq ${planId}&$expand=procedure`;
+    const url = `${api_url}/PlanProcedure?$filter=planId eq ${planId}&$expand=procedure,assignedUsers`;
     const response = await fetch(url, {
         method: "GET",
     });
@@ -64,4 +64,21 @@ export const getUsers = async () => {
     if (!response.ok) throw new Error("Failed to get users");
 
     return await response.json();
+};
+
+export const assignPlanToUsers = async (procedureId,planId, userIds) => {
+    const url = `${api_url}/Plan/AssignPlanToUsers`;
+    var command = { procedureId:procedureId,planId: planId, userIds: userIds };
+    const response = await fetch(url, {
+        method: "POST",
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(command),
+    });
+
+    if (!response.ok) throw new Error("Failed to assign plan to users");
+
+    return true;
 };
