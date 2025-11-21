@@ -42,6 +42,7 @@ public class AddProcedureToPlanCommandHandler : IRequestHandler<AddProcedureToPl
 
             plan.PlanProcedures.Add(new PlanProcedure
             {
+                PlanId = plan.PlanId,
                 ProcedureId = procedure.ProcedureId
             });
 

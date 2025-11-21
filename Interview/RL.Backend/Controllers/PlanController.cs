@@ -46,4 +46,11 @@ public class PlanController : ControllerBase
 
         return response.ToActionResult();
     }
+
+    [HttpPost("AssignPlanToUsers")]
+    public async Task<IActionResult> AssignPlanToUsers(AssignPlanToUsersCommand command, CancellationToken token)
+    {
+        var response = await _mediator.Send(command, token);
+        return response.ToActionResult();
+    }
 }
