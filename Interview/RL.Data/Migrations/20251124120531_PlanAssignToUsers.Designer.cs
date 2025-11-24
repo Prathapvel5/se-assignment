@@ -11,13 +11,31 @@ using RL.Data;
 namespace RL.Data.Migrations
 {
     [DbContext(typeof(RLContext))]
-    [Migration("20251121061000_PlanAssignToUsers")]
+    [Migration("20251124120531_PlanAssignToUsers")]
     partial class PlanAssignToUsers
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.1");
+
+            modelBuilder.Entity("PlanProcedureUser", b =>
+                {
+                    b.Property<int>("AssignedUsersUserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("PlanProceduresPlanId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("PlanProceduresProcedureId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("AssignedUsersUserId", "PlanProceduresPlanId", "PlanProceduresProcedureId");
+
+                    b.HasIndex("PlanProceduresPlanId", "PlanProceduresProcedureId");
+
+                    b.ToTable("PlanProcedureUser");
+                });
 
             modelBuilder.Entity("RL.Data.DataModels.Plan", b =>
                 {
@@ -55,33 +73,6 @@ namespace RL.Data.Migrations
                     b.HasIndex("ProcedureId");
 
                     b.ToTable("PlanProcedures");
-                });
-
-            modelBuilder.Entity("RL.Data.DataModels.PlanProcedureUser", b =>
-                {
-                    b.Property<int>("PlanId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("ProcedureId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("AssignedDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("UpdateDate")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("PlanId", "ProcedureId", "UserId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("PlanProcedureUsers");
                 });
 
             modelBuilder.Entity("RL.Data.DataModels.Procedure", b =>
@@ -856,6 +847,21 @@ namespace RL.Data.Migrations
                         });
                 });
 
+            modelBuilder.Entity("PlanProcedureUser", b =>
+                {
+                    b.HasOne("RL.Data.DataModels.User", null)
+                        .WithMany()
+                        .HasForeignKey("AssignedUsersUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RL.Data.DataModels.PlanProcedure", null)
+                        .WithMany()
+                        .HasForeignKey("PlanProceduresPlanId", "PlanProceduresProcedureId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("RL.Data.DataModels.PlanProcedure", b =>
                 {
                     b.HasOne("RL.Data.DataModels.Plan", "Plan")
@@ -875,33 +881,9 @@ namespace RL.Data.Migrations
                     b.Navigation("Procedure");
                 });
 
-            modelBuilder.Entity("RL.Data.DataModels.PlanProcedureUser", b =>
-                {
-                    b.HasOne("RL.Data.DataModels.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("RL.Data.DataModels.PlanProcedure", "PlanProcedure")
-                        .WithMany("AssignedUsers")
-                        .HasForeignKey("PlanId", "ProcedureId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("PlanProcedure");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("RL.Data.DataModels.Plan", b =>
                 {
                     b.Navigation("PlanProcedures");
-                });
-
-            modelBuilder.Entity("RL.Data.DataModels.PlanProcedure", b =>
-                {
-                    b.Navigation("AssignedUsers");
                 });
 #pragma warning restore 612, 618
         }

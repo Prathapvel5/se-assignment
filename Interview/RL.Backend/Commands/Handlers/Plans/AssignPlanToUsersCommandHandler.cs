@@ -53,25 +53,16 @@ public class AssignPlanToUsersCommandHandler : IRequestHandler<AssignPlanToUsers
                     new NotFoundException($"UserIds not found: {string.Join(", ", invalidIds)}")
                 );
 
-            // Remove old users
-            planProcedure.AssignedUsers.Clear();
+            // Remove users not in the new list
+            planProcedure.AssignedUsers.RemoveAll(u => !request.UserIds.Contains(u.UserId));
 
             // Add new users
-            foreach (var user in users)
-            {
-                planProcedure.AssignedUsers.Add(new PlanProcedureUser
-                {
-                    PlanId = request.PlanId,
-                    ProcedureId = request.ProcedureId,
-                    UserId = user.UserId,
-                    AssignedDate = DateTime.UtcNow,
-                    CreateDate = DateTime.UtcNow,
-                    UpdateDate = DateTime.UtcNow
-                });
-            }
+            planProcedure.AssignedUsers.AddRange(
+                users.Where(u => !planProcedure.AssignedUsers.Any(x => x.UserId == u.UserId))
+            );
 
             await _context.SaveChangesAsync(cancellationToken);
-            
+
             return ApiResponse<Unit>.Succeed(new Unit());
         }
         catch (Exception e)

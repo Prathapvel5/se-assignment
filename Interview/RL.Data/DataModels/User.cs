@@ -10,4 +10,6 @@ public class User : IChangeTrackable
     public string Name { get; set; }
     public DateTime CreateDate { get; set; }
     public DateTime UpdateDate { get; set; }
+
+    public List<PlanProcedure> PlanProcedures { get; set; } = new();
 }

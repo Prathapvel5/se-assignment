@@ -10,9 +10,9 @@ public class PlanProcedure : IChangeTrackable
     public int ProcedureId { get; set; }
     public DateTime CreateDate { get; set; }
     public DateTime UpdateDate { get; set; }
-
+    public List<User>AssignedUsers { get; set; }=new List<User>();
+    
     // Navigation
     public virtual Plan Plan { get; set; }
     public virtual Procedure Procedure { get; set; }
-    public ICollection<PlanProcedureUser> AssignedUsers { get; set; } = new List<PlanProcedureUser>();
 }
